@@ -11,6 +11,8 @@ class TaskDetailsViewController: UIViewController {
 
     @IBOutlet weak var taskDetailsTableView: UITableView!
     
+    let cellDescriptions: [String] = ["Title", "Description", "Estimated minutes", "Logged time", "Assignee"]
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +31,10 @@ class TaskDetailsViewController: UIViewController {
         print("Update Task Detail Button Tapped")
     }
     
+    
+    @IBAction func cellStepperTapped(_ sender: Any) {
+        print("Logged time stepper in task description prototype cell tapped")
+    }
 }
 
 
@@ -40,13 +46,21 @@ extension TaskDetailsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "taskDetailCell", for: indexPath)
-        return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "mainTaskDetailCell", for: indexPath)
+        cell.textLabel?.text = cellDescriptions[indexPath.row]
+        if indexPath.row == 3 {
+            let cell2 = tableView.dequeueReusableCell(withIdentifier: "mainTaskDetailCellWithStepper", for: indexPath)
+            cell2.textLabel?.text = cellDescriptions[indexPath.row]
+            return cell2
+        } else {
+            return cell
+        }
+        
+        
     }
-    
-    
 }
-
+    
 extension TaskDetailsViewController: UITableViewDelegate {
-    
-}
+        
+    }
+
