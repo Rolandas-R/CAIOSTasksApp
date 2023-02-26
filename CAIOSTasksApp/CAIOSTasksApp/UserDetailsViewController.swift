@@ -8,7 +8,10 @@
 import UIKit
 
 class UserDetailsViewController: UIViewController {
-
+    
+    
+    @IBOutlet weak var presentUserNameTextLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
