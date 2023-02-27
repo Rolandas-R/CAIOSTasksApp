@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 struct UserLoginRequest: Codable {
     let username: String
@@ -14,7 +14,10 @@ struct UserDeleteRequest: Codable {
     let id: Int
 }
 
-//let taskURL = "http://134.122.94.77/api/Task"
+let kUserId = 49
+
+
+let taskURL = "http://134.122.94.77/api/Task/userTasks"
 let userURL = "http://134.122.94.77/api/User"
 
 //func buildUserQueryURL() -> URL? {
@@ -65,11 +68,27 @@ func deleteRequest (url: URL, completion: @escaping (Data?) -> Void) {
     }.resume()
 }
 
+func buildQueryURL() -> URL? {
+    if let url = URL(string: taskURL) {
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        let userIdQueryItem = URLQueryItem(name: "userId", value: String(kUserId))
+        let queryItems = [userIdQueryItem]
+        components?.queryItems = queryItems
+        guard let queryURL = components?.url else { return nil }
+        print(queryURL)
+        return queryURL
+    }
+    return nil
+}
+
+buildQueryURL()
+
+
 // URL'ai:
-let loginURL = URL(string: "http://134.122.94.77/api/user/login")!
-let registerURL = URL(string: "http://134.122.94.77/api/User/register")!
-//let deleteUserURL = URL(string: "http://134.122.94.77/api/User/")!
-let getUserTasksURL = URL(string: "http://134.122.94.77/api/Task/userTasks")
+//let loginURL = URL(string: "http://134.122.94.77/api/user/login")!
+//let registerURL = URL(string: "http://134.122.94.77/api/User/register")!
+////let deleteUserURL = URL(string: "http://134.122.94.77/api/User/")!
+//let getUserTasksURL = URL(string: "http://134.122.94.77/api/Task/userTasks")
 
 // Requestai:
 
