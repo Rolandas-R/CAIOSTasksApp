@@ -14,18 +14,15 @@ struct UserDeleteRequest: Codable {
     let id: Int
 }
 
+private var dataTask: URLSessionDataTask?
+
 let kUserId = 49
 
 
-let taskURL = "http://134.122.94.77/api/Task/userTasks"
+let userTasksURL = "http://134.122.94.77/api/Task/userTasks"
 let userURL = "http://134.122.94.77/api/User"
 
-//func buildUserQueryURL() -> URL? {
-//    if let url = URL(string: userURL) {
-//        return url
-//    }
-//    return nil
-//}
+
 
 func postRequest (url: URL, body: Data?, completion: @escaping (Data?) -> Void) {
     var request = URLRequest (url: url)
@@ -69,7 +66,7 @@ func deleteRequest (url: URL, completion: @escaping (Data?) -> Void) {
 }
 
 func buildQueryURL() -> URL? {
-    if let url = URL(string: taskURL) {
+    if let url = URL(string: userTasksURL) {
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         let userIdQueryItem = URLQueryItem(name: "userId", value: String(kUserId))
         let queryItems = [userIdQueryItem]
@@ -90,9 +87,10 @@ buildQueryURL()
 ////let deleteUserURL = URL(string: "http://134.122.94.77/api/User/")!
 //let getUserTasksURL = URL(string: "http://134.122.94.77/api/Task/userTasks")
 
-// Requestai:
+// MARK: - Requestai:
 
-// register
+// REGISTER USER
+
 //let registerUserRequest = UserRegisterRequest(username: "DDDD", password: "DDDD")
 //let registerData = try! JSONEncoder().encode (registerUserRequest)
 //
@@ -101,7 +99,8 @@ buildQueryURL()
 //        print (String (data: responseData, encoding: .utf8) ?? "nil")
 //}
 
-// login
+// LOGIN USER
+
 //let loginUserRequest = UserLoginRequest(username: "DDDD", password: "DDDD")
 //let loginData = try! JSONEncoder().encode (loginUserRequest)
 //
@@ -110,7 +109,8 @@ buildQueryURL()
 //        print (String (data: responseData, encoding: .utf8) ?? "nil")
 //}
 
-// delete
+
+// DELETE USER
 
 //var deletingUser = UserDeleteRequest(id: 48)
 //let url = buildDeleteUserURL(baseURL: userURL, id: deletingUser.id)
@@ -118,6 +118,47 @@ buildQueryURL()
 //    guard let responseData = responseData else { return }
 //    print (String (data: responseData, encoding: .utf8)!)
 //}
+
+// FETCH USER TASKS
+
+public func fetchUserTasks(completion: @escaping (Data?) -> Void) {
+    dataTask?.cancel()
+    
+    if let queryURL = buildQueryURL() {
+        dataTask = URLSession.shared.dataTask(with: queryURL) {
+            data,
+            response,
+            error in
+            guard let data else {
+                completion(nil)
+                return
+            }
+            
+            return completion(data)
+        }
+    }
+    dataTask?.resume()
+}
+
+fetchUserTasks { data in
+    DispatchQueue.main.async {
+        let result = try? JSONDecoder().decode(Data.self,
+                                               from: data!)
+        
+        print (String (data: data!, encoding: .utf8)!)
+    }
+}
+            
+
+            
+
+            
+            
+           
+        
+
+
+    
 
 
 
