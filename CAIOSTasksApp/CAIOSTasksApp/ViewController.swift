@@ -15,9 +15,19 @@ class ViewController: UIViewController {
     @IBOutlet weak var enterCredentialsButton: UIButton!
     @IBOutlet weak var navigationalTextLabel: UILabel!
     
+
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       let url = Constants.getURL(for: .userEndpoint, id: 101)
+        let url2 = Constants.getURL(for: .taskEndpoint, id: 104)
+        print(url)
+        print(url2)
+        let url3 = Constants.getURL(for: .userEndpoint, subEndpoint: .register)
+        print(url3)
+        guard let url4 = Constants.buildGetUserTasksURL() else { return }
+        print(url4)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(ViewController.tapFunction))
                 navigationalTextLabel.isUserInteractionEnabled = true
