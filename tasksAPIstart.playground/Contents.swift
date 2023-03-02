@@ -28,6 +28,12 @@ struct Task: Codable {
     var isDone: Bool?
 }
 
+enum NetworkError: Error {
+    case badRequest(errorMessage: String?)
+    case notFound
+    case unknown
+}
+
 
 private var dataTask: URLSessionDataTask?
 
@@ -40,7 +46,7 @@ let taskURL =  URL(string:"http://134.122.94.77/api/Task")!
 
 
 
-func postRequest (url: URL, body: Data?, completion: @escaping (Data?) -> Void) {
+func postRequest (url: URL, body: Data?, completion: @escaping (Data) -> Void) {
     var request = URLRequest (url: url)
     request.httpMethod = "POST"
     request.httpBody = body
@@ -50,11 +56,9 @@ func postRequest (url: URL, body: Data?, completion: @escaping (Data?) -> Void) 
             print(error ?? "Unknown error")
             return
         }
-        if let httpResponse = response as? HTTPURLResponse {
-            print("statusCode: \(httpResponse.statusCode)")
-        }
-        completion (data)
-        return
+
+            completion (data)
+
     }.resume()
 }
 
@@ -111,25 +115,29 @@ let newTaskURL = URL(string: "http://134.122.94.77/api/Task")!
 // MARK: - Requestai:
 
 // MARK: REGISTER USER
-/*
-let registerUserRequest = UserRegisterRequest(username: "123", password: "123")
-let registerData = try! JSONEncoder().encode (registerUserRequest)
 
-postRequest(url: registerURL, body: registerData) { responseData in
-        guard let responseData = responseData else { return }
-        print (String (data: responseData, encoding: .utf8) ?? "nil")
-}
- */
+//let useris = UserRegisterRequest(username: "useriokas", password: "kazkas")
+//
+//let registerUserRequest = useris
+//let registerData = try! JSONEncoder().encode (registerUserRequest)
+//
+//postRequest(url: registerURL, body: registerData) { responseData in
+//        guard let responseData = responseData else { return }
+//        print (String (data: responseData, encoding: .utf8) ?? "nil")
+//}
+
 
 // MARK: LOGIN USER
 
-let loginUserRequest = UserLoginRequest(username: "123", password: "123")
-let loginData = try! JSONEncoder().encode (loginUserRequest)
-
-postRequest(url: loginURL, body: loginData) { responseData in
-        guard let responseData = responseData else { return }
-        print (String (data: responseData, encoding: .utf8) ?? "nil")
-}
+//let loginUserRequest = UserLoginRequest(username: "dd", password: "bb")
+//let loginData = try! JSONEncoder().encode (loginUserRequest)
+//
+//postRequest(url: loginURL, body: loginData) { responseData in
+//
+//        let datas =  (String (data: responseData, encoding: .utf8) ?? "nil")
+//    let result = try! JSONDecoder().decode(datas, from: datas)
+//    print(result)
+//}
 
 
 // MARK: DELETE USER

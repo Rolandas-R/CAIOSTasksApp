@@ -7,13 +7,20 @@
 
 import Foundation
 
-struct Task: Codable {
+struct Task: Decodable {
     
     let id: Int
     let title: String
     let description: String
-    var estimateMinutes: Int?
-    var assigneeId: Int?
-    var loggedTime: Int?
-    var isDone: Bool?
+    var estimateMinutes: Int
+    var assigneeInfo: Assignee
+    var loggedTime: Int
+    var isDone: Bool
 }
+
+struct Assignee: Decodable {
+    var id: Int
+    var username: String
+}
+
+

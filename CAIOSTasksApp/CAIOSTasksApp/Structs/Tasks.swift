@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct Tasks: Codable {
-    let userTasks: Task
+struct Tasks: Decodable {
+    let tasks: [Task]
 }
