@@ -7,14 +7,7 @@
 
 import Foundation
 
-
-
-
-
-
 class SwaggerAPI {
-    
-    
     
     enum APIErorr: Error {
         case badRequest(errorMessage: String?)
@@ -23,11 +16,11 @@ class SwaggerAPI {
         case parsingFail
     }
     
-//    struct ApiData<T: Decodable>: Decodable {
-//        let results: [T]
-//    }
-//
-//    private(set) var task: URLSessionDataTask?
+    //    struct ApiData<T: Decodable>: Decodable {
+    //        let results: [T]
+    //    }
+    //
+    //    private(set) var task: URLSessionDataTask?
     
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
@@ -92,7 +85,7 @@ class SwaggerAPI {
         }.resume()
     }
     
-    func registerUser(user: User, completion: @escaping (Data?) -> Void) {
+    func registerUser(user: UserManager.AuthentificateRequest, completion: @escaping (Data?) -> Void) {
         let url = Constants.getURL(for: .userEndpoint, subEndpoint: .register)
         let registerRequestParams = user
         
@@ -157,11 +150,11 @@ class SwaggerAPI {
         }
     }
     
-   func fetchUserTasks(userId: Int, completion: @escaping (Result<[Task], APIErorr>) -> Void) {
+    func fetchUserTasks(userId: Int, completion: @escaping (Result<[Task], APIErorr>) -> Void) {
         
         let id = userId
         guard let queryURL = Constants.buildGetUserTasksURL(userId: id) else { return }
-       print(queryURL)
+        print(queryURL)
         performRequest(url: queryURL) { [weak self] result in
             guard let self else { return }
             
@@ -186,11 +179,41 @@ class SwaggerAPI {
                 case .parsingFail:
                     print("parsing failed")
                 }
-//            completion(.failure(.parsingFail))
+                //            completion(.failure(.parsingFail))
+            }
+        }
+    }
+    
+    func createNewTask(newTask: TasksManager.NewTaskRegistrationRequest, completion: @escaping (Data?) -> Void) {
+        let newTaskURL = Constants.getURL(for: .taskEndpoint)!
+        
+        let postNewTaskRequest = newTask
+        let taskData = try! JSONEncoder().encode (postNewTaskRequest)
+        
+        postRequest(url: newTaskURL, body: taskData) { [weak self] response in
+            guard self != nil else { return }
+            switch response {
+            case .success(let data):
+                print("New Task was created")
+                completion(data)
+            case .failure(let error):
+                switch error {
+                case .fetchFail:
+                    print("unknown error")
+                case .notFound:
+                    print("Not found")
+                case .badRequest(let errorMessage):
+                    print("Bad request:")
+                    print(errorMessage ?? "Bad request")
+                case .parsingFail:
+                    print("parsing failed")
+                }
+                completion(nil)
             }
         }
     }
 }
+
     
 
 

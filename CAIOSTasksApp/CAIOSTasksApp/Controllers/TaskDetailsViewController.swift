@@ -8,8 +8,13 @@
 import UIKit
 
 class TaskDetailsViewController: UIViewController {
+    
+
 
     @IBOutlet weak var taskDetailsTableView: UITableView!
+    
+    let swagger = SwaggerAPI()
+    var tasks: [Task] = []
     
     let cellDescriptions: [String] = ["Title", "Description", "Estimated minutes", "Logged time", "Assignee"]
     
@@ -29,6 +34,20 @@ class TaskDetailsViewController: UIViewController {
     
     @IBAction func updateTaskDetailButtonTapped(_ sender: Any) {
         print("Update Task Detail Button Tapped")
+        
+        swagger.fetchUserTasks(userId: user22.userId ?? 0) { result in
+            switch result {
+
+            case .success(let results):
+                self.tasks.append(contentsOf: results)
+
+                for task in self.tasks {
+                    print("Id: \(task.id), title: \(task.title), description: \(task.description), estimateMinutes: \(task.estimateMinutes), loggedTime: \(task.loggedTime), isDone: \(task.isDone), assigneeInfo: \(task.assigneeInfo.id) - \(task.assigneeInfo.username)")
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     

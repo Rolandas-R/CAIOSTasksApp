@@ -11,7 +11,13 @@ struct User: Codable {
     let username: String?
     let password: String?
     var userId: Int?
+    
+    init(username: String?, password: String?, userId: Int? = nil) {
+        self.username = username
+        self.password = password
+        self.userId = userId
+    }
 }
 
-var user22 = User(username: "66", password: "bb", userId: 15)
+var user22 = User(username: "Marijans", password: "Latvis", userId: 354)
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Task: Decodable {
+struct Task: Codable {
     
     let id: Int
     let title: String
@@ -18,7 +18,7 @@ struct Task: Decodable {
     var isDone: Bool
 }
 
-struct Assignee: Decodable {
+struct Assignee: Codable {
     var id: Int
     var username: String
 }
