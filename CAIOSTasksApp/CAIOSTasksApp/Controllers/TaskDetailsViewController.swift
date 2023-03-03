@@ -15,6 +15,7 @@ class TaskDetailsViewController: UIViewController {
     
     let swagger = SwaggerAPI()
     var tasks: [Task] = []
+    let taskManager = TasksManager()
     
     let cellDescriptions: [String] = ["Title", "Description", "Estimated minutes", "Logged time", "Assignee"]
     
@@ -53,7 +54,20 @@ class TaskDetailsViewController: UIViewController {
     
     @IBAction func cellStepperTapped(_ sender: Any) {
         print("Logged time stepper in task description prototype cell tapped")
+        
+        
+        let fetchTaskId = taskManager.taskRequest.id
+        swagger.fetchTask(taskId: fetchTaskId) {  result in
+            switch result {
+            case .success(let result):
+                print(result)
+              
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
+    
 }
 
 

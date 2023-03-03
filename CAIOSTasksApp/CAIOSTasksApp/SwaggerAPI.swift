@@ -26,6 +26,8 @@ class SwaggerAPI {
     private let decoder = JSONDecoder()
     
     
+    // POST
+    
     private func postRequest(url: URL, body: Data?, callback: @escaping (Result<Data, APIErorr>) -> Void){
         var request = URLRequest (url: url)
         request.httpMethod = "POST"
@@ -57,7 +59,7 @@ class SwaggerAPI {
     }
     
     
-    
+    // GET
     private func performRequest(url: URL?, callback: @escaping (Result<Data, APIErorr>) -> Void) {
         
         guard let url else { return }
@@ -84,6 +86,37 @@ class SwaggerAPI {
             }
         }.resume()
     }
+    
+    // DELETE
+    
+    func deleteRequest (url: URL?, completion: @escaping (Data?) -> Void) {
+        
+        var request = URLRequest (url: url!)
+        request.httpMethod = "DELETE"
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                print(error ?? "Unknown error")
+                return
+            }
+            if let httpResponse = response as? HTTPURLResponse {
+                print("statusCode: \(httpResponse.statusCode)")
+                switch httpResponse.statusCode {
+                case 200:
+                    print("Success: deleted")
+                case 400:
+                    print("Bad request")
+                case 404:
+                    print("Already deleted")
+                default:
+                    print("Unknown generic error")
+                }
+                completion (data)
+                return
+            }
+        }.resume()
+    }
+    
+    // Darbines f-jos
     
     func registerUser(user: UserManager.AuthentificateRequest, completion: @escaping (Data?) -> Void) {
         let url = Constants.getURL(for: .userEndpoint, subEndpoint: .register)
@@ -113,34 +146,7 @@ class SwaggerAPI {
             }
         }
     }
-    
-    func deleteRequest (url: URL?, completion: @escaping (Data?) -> Void) {
-        
-        var request = URLRequest (url: url!)
-        request.httpMethod = "DELETE"
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {
-                print(error ?? "Unknown error")
-                return
-            }
-            if let httpResponse = response as? HTTPURLResponse {
-                print("statusCode: \(httpResponse.statusCode)")
-                switch httpResponse.statusCode {
-                case 200:
-                    print("Success: deleted")
-                case 400:
-                    print("Bad request")
-                case 404:
-                    print("Already deleted")
-                default:
-                    print("Unknown generic error")
-                }
-                completion (data)
-                return
-            }
-        }.resume()
-    }
-    
+   
     func deleteUser(userId: Int) {
         guard let url = Constants.getURL(for: .userEndpoint, id: userId) else { return }
         
@@ -163,6 +169,39 @@ class SwaggerAPI {
                 do {
                     let parsedData = try self.decoder.decode(Tasks.self, from: data)
                     completion(.success(parsedData.tasks))
+                    
+                } catch {
+                    completion(.failure(.parsingFail))
+                }
+            case .failure(let error):
+                switch error {
+                case .fetchFail:
+                    print("unknown error")
+                case .notFound:
+                    print("Not found")
+                case .badRequest(let errorMessage):
+                    print("Bad request:")
+                    print(errorMessage ?? "Bad request")
+                case .parsingFail:
+                    print("parsing failed")
+                }
+                //            completion(.failure(.parsingFail))
+            }
+        }
+    }
+    
+    func fetchTask (taskId: Int, completion: @escaping (Result<Task, APIErorr>) -> Void) {
+
+        guard let queryURL = Constants.getURL(for: .taskEndpoint, id: taskId) else { return }
+        print(queryURL)
+        performRequest(url: queryURL) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let data):
+                do {
+                    let parsedData = try self.decoder.decode(Task.self, from: data)
+                    completion(.success(parsedData))
                     
                 } catch {
                     completion(.failure(.parsingFail))
@@ -212,6 +251,8 @@ class SwaggerAPI {
             }
         }
     }
+    
+
 }
 
     

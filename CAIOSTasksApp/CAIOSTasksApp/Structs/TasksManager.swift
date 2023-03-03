@@ -15,7 +15,9 @@ class TasksManager{
         let estimateMinutes: Int
         let assigneeId: Int
     }
-    struct NewTaskResponce: Codable {
+    struct TaskRequest: Codable {
         let id: Int
     }
+    
+    let taskRequest = TaskRequest(id: 201)
 }
