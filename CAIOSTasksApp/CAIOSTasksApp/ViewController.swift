@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var enterCredentialsButton: UIButton!
     @IBOutlet weak var navigationalTextLabel: UILabel!
     
-    let swagger = SwaggerAPI()
+    let swagger = SwaggerAPI.shared
     
     var tasks: [Task] = []
     
@@ -31,6 +31,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("before \(tasks.count)")
         
 /*
         let authUser = UserManager.AuthentificateRequest(username: "Marijans", password: "Latvis")
@@ -69,29 +70,29 @@ class ViewController: UIViewController {
         
 //        swagger.deleteUser(userId: user22.userId ?? 0)
         
-//        swagger.fetchUserTasks(userId: user22.userId ?? 0) { result in
-//            switch result {
-//
-//            case .success(let results):
-//                self.tasks.append(contentsOf: results)
-//
-//                for task in self.tasks {
-//                    print("Id: \(task.id), title: \(task.title), description: \(task.description), estimateMinutes: \(task.estimateMinutes), loggedTime: \(task.loggedTime), isDone: \(task.isDone), assigneeInfo: \(task.assigneeInfo.id) - \(task.assigneeInfo.username)")
-//                }
-//            case .failure(let error):
-//                print(error.localizedDescription)
-//            }
-//        }
-        let newTask = TasksManager.NewTaskRegistrationRequest(title: "Pavadinimas44", description: "Ketvirtas task", estimateMinutes: 20, assigneeId: user22.userId ?? 0)
-        swagger.createNewTask(newTask: newTask) { respData in
-            guard let respData = respData, let taskResponse = try? JSONDecoder().decode(TasksManager.TaskRequest.self, from: respData) else { return }
-            let task = Task(id: taskResponse.id, title: newTask.title, description: newTask.description, estimateMinutes: newTask.estimateMinutes, assigneeInfo: Assignee(id: user22.userId!, username: user22.username!), loggedTime: newTask.estimateMinutes, isDone: false)
-            self.tasks.append(task)
-            print (String (data: respData, encoding: .utf8) ?? "nil")
+        swagger.fetchUserTasks(userId: user22.userId ?? 0) { result in
+            switch result {
+
+            case .success(let results):
+                self.tasks.append(contentsOf: results)
+                print("after \(self.tasks.count)")
+
+
+                for task in self.tasks {
+                    print("Id: \(task.id), title: \(task.title), description: \(task.description), estimateMinutes: \(task.estimateMinutes), loggedTime: \(task.loggedTime), isDone: \(task.isDone), assigneeInfo: \(task.assigneeInfo.id) - \(task.assigneeInfo.username)")
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
         }
-        
-        
-        
+//        let newTask = TasksManager.NewTaskRegistrationRequest(title: "Sestadienis2", description: "Pavadinimas2LastBeforeLast", estimateMinutes: 20, assigneeId: user22.userId ?? 0)
+//        swagger.createNewTask(newTask: newTask) { respData in
+//            guard let respData = respData, let taskResponse = try? JSONDecoder().decode(TasksManager.TaskRequest.self, from: respData) else { return }
+//            let task = Task(id: taskResponse.id, title: newTask.title, description: newTask.description, estimateMinutes: newTask.estimateMinutes, assigneeInfo: Assignee(id: user22.userId!, username: user22.username!), loggedTime: newTask.estimateMinutes, isDone: false)
+//            self.tasks.append(task)
+//            print (String (data: respData, encoding: .utf8) ?? "nil")
+//        }
+ 
     }
     
 }

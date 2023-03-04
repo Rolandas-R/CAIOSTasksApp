@@ -8,9 +8,28 @@
 import UIKit
 
 class TasksTableViewController: UITableViewController {
+    
+    let swagger = SwaggerAPI.shared
+    
+    var tasks: [Task] = []
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("before \(tasks.count)")
+        
+        let newTask = TasksManager.NewTaskRegistrationRequest(title: "Sestadienis4", description: "Pavadinimas4", estimateMinutes: 20, assigneeId: user22.userId ?? 0)
+        
+        swagger.createNewTask(newTask: newTask) { respData in
+            guard let respData = respData, let taskResponse = try? JSONDecoder().decode(TasksManager.TaskRequest.self, from: respData) else { return }
+            let task = Task(id: taskResponse.id, title: newTask.title, description: newTask.description, estimateMinutes: newTask.estimateMinutes, assigneeInfo: Assignee(id: user22.userId!, username: user22.username!), loggedTime: newTask.estimateMinutes, isDone: false)
+            self.tasks.append(task)
+            print (String (data: respData, encoding: .utf8) ?? "nil")
+            print(String (taskResponse.id))
+            print("after \(self.tasks.count)")
+        }
+        
+        
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false

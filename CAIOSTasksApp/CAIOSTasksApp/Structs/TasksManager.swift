@@ -18,6 +18,16 @@ class TasksManager{
     struct TaskRequest: Codable {
         let id: Int
     }
+    struct TaskEditRequest: Encodable {
+        let id: Int
+        let title: String
+        let description: String
+        let estimateMinutes: Int
+        let assigneeId: Int
+        let loggedTime: Int
+        let isDone: Bool
+        
+    }
     
-    let taskRequest = TaskRequest(id: 201)
+    let taskRequest = TaskRequest(id: 214)
 }

@@ -11,16 +11,17 @@ class SwaggerAPI {
     
     enum APIErorr: Error {
         case badRequest(errorMessage: String?)
-        case notFound
+        case notFound(errorMessage: String?)
         case fetchFail
         case parsingFail
+        case methodNotAllowed(errorMessage: String?)
+        
     }
     
-    //    struct ApiData<T: Decodable>: Decodable {
-    //        let results: [T]
-    //    }
-    //
-    //    private(set) var task: URLSessionDataTask?
+
+    static let shared = SwaggerAPI()
+    private init() { }
+    
     
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
@@ -49,7 +50,7 @@ class SwaggerAPI {
             case 200:
                 callback(.success(data))
             case 404:
-                callback(.failure(.notFound))
+                callback(.failure(.notFound(errorMessage: String(data: data, encoding: .utf8))))
             case 400:
                 callback(.failure(.badRequest(errorMessage: String(data: data, encoding: .utf8))))
             default:
@@ -60,7 +61,7 @@ class SwaggerAPI {
     
     
     // GET
-    private func performRequest(url: URL?, callback: @escaping (Result<Data, APIErorr>) -> Void) {
+    public func getRequest(url: URL?, callback: @escaping (Result<Data, APIErorr>) -> Void) {
         
         guard let url else { return }
         URLSession.shared.dataTask(with: url) { data, response, error in
@@ -80,7 +81,7 @@ class SwaggerAPI {
             case 400:
                 callback(.failure(.badRequest(errorMessage: String(data: data, encoding: .utf8))))
             case 404:
-                callback(.failure(.notFound))
+                callback(.failure(.notFound(errorMessage: String(data: data, encoding: .utf8))))
             default:
                 callback(.failure(.fetchFail))
             }
@@ -89,7 +90,7 @@ class SwaggerAPI {
     
     // DELETE
     
-    func deleteRequest (url: URL?, completion: @escaping (Data?) -> Void) {
+    public func deleteRequest (url: URL?, completion: @escaping (Data?) -> Void) {
         
         var request = URLRequest (url: url!)
         request.httpMethod = "DELETE"
@@ -116,10 +117,48 @@ class SwaggerAPI {
         }.resume()
     }
     
+    // PUT
+    
+    private func putRequest(url: URL, body: Data?, callback: @escaping (Result<Data, APIErorr>) -> Void){
+        var request = URLRequest (url: url)
+        request.httpMethod = "PUT"
+        request.httpBody = body
+        request.addValue ("application/json", forHTTPHeaderField: "Content-Type")
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                callback(.failure(.fetchFail))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                callback(.failure(.fetchFail))
+                return
+            }
+            
+            switch httpResponse.statusCode {
+            case 200:
+                callback(.success(data))
+            case 404:
+                callback(.failure(.notFound(errorMessage: String(data: data, encoding: .utf8))))
+            case 405:
+                callback(.failure(.methodNotAllowed(errorMessage: String(data: data, encoding: .utf8))))
+            case 400:
+                callback(.failure(.badRequest(errorMessage: String(data: data, encoding: .utf8))))
+            default:
+                callback(.failure(.fetchFail))
+            }
+        }.resume()
+    }
+    
+    
+    
     // Darbines f-jos
     
     func registerUser(user: UserManager.AuthentificateRequest, completion: @escaping (Data?) -> Void) {
-        let url = Constants.getURL(for: .userEndpoint, subEndpoint: .register)
+        
+            
+        let url = Constants.getURL(for: .userEndpoint, urlSuffix: .register )
         let registerRequestParams = user
         
         let bodyData = try! encoder.encode(registerRequestParams)
@@ -141,6 +180,8 @@ class SwaggerAPI {
                     print(errorMessage ?? "Bad request")
                 case .parsingFail:
                     print("parsing failed")
+                case .methodNotAllowed:
+                    print("wrong method")
                 }
                 completion(nil)
             }
@@ -159,9 +200,9 @@ class SwaggerAPI {
     func fetchUserTasks(userId: Int, completion: @escaping (Result<[Task], APIErorr>) -> Void) {
         
         let id = userId
-        guard let queryURL = Constants.buildGetUserTasksURL(userId: id) else { return }
+        guard let queryURL = Constants.buildURLWithParams(userId: id) else { return }
         print(queryURL)
-        performRequest(url: queryURL) { [weak self] result in
+        getRequest(url: queryURL) { [weak self] result in
             guard let self else { return }
             
             switch result {
@@ -184,6 +225,8 @@ class SwaggerAPI {
                     print(errorMessage ?? "Bad request")
                 case .parsingFail:
                     print("parsing failed")
+                case .methodNotAllowed:
+                    print("wrong method")
                 }
                 //            completion(.failure(.parsingFail))
             }
@@ -194,7 +237,7 @@ class SwaggerAPI {
 
         guard let queryURL = Constants.getURL(for: .taskEndpoint, id: taskId) else { return }
         print(queryURL)
-        performRequest(url: queryURL) { [weak self] result in
+        getRequest(url: queryURL) { [weak self] result in
             guard let self else { return }
             
             switch result {
@@ -217,6 +260,8 @@ class SwaggerAPI {
                     print(errorMessage ?? "Bad request")
                 case .parsingFail:
                     print("parsing failed")
+                case .methodNotAllowed:
+                    print("wrong method")
                 }
                 //            completion(.failure(.parsingFail))
             }
@@ -246,6 +291,40 @@ class SwaggerAPI {
                     print(errorMessage ?? "Bad request")
                 case .parsingFail:
                     print("parsing failed")
+                case .methodNotAllowed:
+                    print("wrong method")
+                }
+                completion(nil)
+            }
+        }
+    }
+    
+    func editTask(taskDetails: TasksManager.TaskEditRequest, completion: @escaping (Data?) -> Void) {
+        let editTaskURL = Constants.getURL(for: .taskEndpoint)!
+        
+        let postEditTaskRequest = taskDetails
+        
+        let taskData = try! JSONEncoder().encode (postEditTaskRequest)
+        
+        putRequest(url: editTaskURL, body: taskData) { [weak self] response in
+            guard self != nil else { return }
+            switch response {
+            case .success(let data):
+                print("Task was edited")
+                completion(data)
+            case .failure(let error):
+                switch error {
+                case .fetchFail:
+                    print("unknown error")
+                case .notFound:
+                    print("Not found")
+                case .badRequest(let errorMessage):
+                    print("Bad request:")
+                    print(errorMessage ?? "Bad request")
+                case .parsingFail:
+                    print("parsing failed")
+                case .methodNotAllowed:
+                    print("wrong method")
                 }
                 completion(nil)
             }

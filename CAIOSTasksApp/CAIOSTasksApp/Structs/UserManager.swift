@@ -25,6 +25,11 @@ class UserManager {
     struct UserResponse: Codable {
         let userId: Int
     }
+    
+    enum UserAuthentificationMethod: Codable {
+        case register
+        case login
+    }
 
     
 }

@@ -13,7 +13,7 @@ class TaskDetailsViewController: UIViewController {
 
     @IBOutlet weak var taskDetailsTableView: UITableView!
     
-    let swagger = SwaggerAPI()
+    let swagger = SwaggerAPI.shared
     var tasks: [Task] = []
     let taskManager = TasksManager()
     
@@ -23,6 +23,7 @@ class TaskDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTaskDetailsTableView()
+        print("before \(tasks.count)")
 
         // Do any additional setup after loading the view.
     }
@@ -41,6 +42,7 @@ class TaskDetailsViewController: UIViewController {
 
             case .success(let results):
                 self.tasks.append(contentsOf: results)
+                print("after \(self.tasks.count)")
 
                 for task in self.tasks {
                     print("Id: \(task.id), title: \(task.title), description: \(task.description), estimateMinutes: \(task.estimateMinutes), loggedTime: \(task.loggedTime), isDone: \(task.isDone), assigneeInfo: \(task.assigneeInfo.id) - \(task.assigneeInfo.username)")
