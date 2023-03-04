@@ -13,8 +13,8 @@ enum Constants: String {
     case taskEndpoint = "Task/"
     
     enum URLSuffix: String {
-        case register = "register"
-        case login = "login"
+        case register = "register/"
+        case login = "login/"
         case userTasks = "/api/Task/userTasks"
     }
     

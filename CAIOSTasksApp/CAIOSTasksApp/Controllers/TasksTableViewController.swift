@@ -10,33 +10,36 @@ import UIKit
 class TasksTableViewController: UITableViewController {
     
     let swagger = SwaggerAPI.shared
+//    var currentUser: User?
+    var currentUser = user22
     
-    var tasks: [Task] = []
-
-
+    private var tableData: [Task]? {
+        didSet {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("before \(tasks.count)")
         
-        let newTask = TasksManager.NewTaskRegistrationRequest(title: "Sestadienis4", description: "Pavadinimas4", estimateMinutes: 20, assigneeId: user22.userId ?? 0)
-        
-        swagger.createNewTask(newTask: newTask) { respData in
-            guard let respData = respData, let taskResponse = try? JSONDecoder().decode(TasksManager.TaskRequest.self, from: respData) else { return }
-            let task = Task(id: taskResponse.id, title: newTask.title, description: newTask.description, estimateMinutes: newTask.estimateMinutes, assigneeInfo: Assignee(id: user22.userId!, username: user22.username!), loggedTime: newTask.estimateMinutes, isDone: false)
-            self.tasks.append(task)
-            print (String (data: respData, encoding: .utf8) ?? "nil")
-            print(String (taskResponse.id))
-            print("after \(self.tasks.count)")
+        swagger.fetchUserTasks(userId: currentUser.userId ?? 0) { task in
+            guard self.currentUser.userId != nil else { return }
+            
+            switch task {
+                
+            case .success(let tasks):
+                self.tableData = tasks
+                
+            case .failure(let error):
+                assert(false, "Fetch error!")
+                print(error.localizedDescription)
+            }
         }
-        
-        
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
+
 
     // MARK: - Table view data source
 
@@ -46,15 +49,15 @@ class TasksTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 20
+        return tableData?.count ?? 0
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
+        cell.textLabel?.text = tableData?[indexPath.row].title
+        cell.detailTextLabel?.text = tableData?[indexPath.row].description
 
-        // Configure the cell...
 
         return cell
     }
@@ -104,5 +107,19 @@ class TasksTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    //        print("before \(tasks.count)")
+    //
+    //        let newTask = TasksManager.NewTaskRegistrationRequest(title: "Sestadienis4", description: "Pavadinimas4", estimateMinutes: 20, assigneeId: user22.userId ?? 0)
+    //
+    //        swagger.createNewTask(newTask: newTask) { respData in
+    //            guard let respData = respData, let taskResponse = try? JSONDecoder().decode(TasksManager.TaskRequest.self, from: respData) else { return }
+    //            let task = Task(id: taskResponse.id, title: newTask.title, description: newTask.description, estimateMinutes: newTask.estimateMinutes, assigneeInfo: Assignee(id: user22.userId!, username: user22.username!), loggedTime: newTask.estimateMinutes, isDone: false)
+    //            self.tasks.append(task)
+    //            print (String (data: respData, encoding: .utf8) ?? "nil")
+    //            print(String (taskResponse.id))
+    //            print("after \(self.tasks.count)")
+    //        }
+            
 
 }
