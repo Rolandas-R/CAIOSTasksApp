@@ -23,10 +23,13 @@ class TaskDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTaskDetailsTableView()
-        print("before \(tasks.count)")
+        
+
 
         // Do any additional setup after loading the view.
     }
+    
+
     
     private func setupTaskDetailsTableView() {
         taskDetailsTableView.dataSource = self

@@ -14,6 +14,13 @@ class TasksManager{
         let description: String
         let estimateMinutes: Int
         let assigneeId: Int
+        
+        init(title: String, description: String, estimateMinutes: Int, assigneeId: Int) {
+            self.title = title
+            self.description = description
+            self.estimateMinutes = estimateMinutes
+            self.assigneeId = assigneeId
+        }
     }
     struct TaskRequest: Codable {
         let id: Int

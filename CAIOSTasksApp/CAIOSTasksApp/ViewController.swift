@@ -9,19 +9,27 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    enum State {
+        case register
+        case login
+    }
+    
     
     @IBOutlet weak var enterUserNameField: UITextField!
     @IBOutlet weak var enterPasswordField: UITextField!
     @IBOutlet weak var enterCredentialsButton: UIButton!
     @IBOutlet weak var navigationalTextLabel: UILabel!
     
-    let swagger = SwaggerAPI.shared
     
-    var tasks: [Task] = []
+    let swagger = SwaggerAPI.shared
     
     let userManager = UserManager()
     
-    var users: [User] = []
+    let taskManager = TasksManager()
+    
+    var currentUser = UserManager.users.last
+    
+    var currentState: State = .register
     
 
     
@@ -31,7 +39,60 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("before \(tasks.count)")
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(ViewController.labelTapFunction))
+        navigationalTextLabel.isUserInteractionEnabled = true
+        navigationalTextLabel.addGestureRecognizer(tap)
+    }
+    
+    
+    private func registerUser() {
+        
+        let username = enterUserNameField.text ?? ""
+        let password = enterPasswordField.text ?? ""
+        guard username.count > 1 && password.count > 1 else {
+            print("Empty fields")
+            return
+        }
+        
+        let authUser = UserManager.AuthentificateRequest(username: username, password: password)
+        swagger.registerUser(user: authUser) { responseData in
+            DispatchQueue.main.async { [weak self] in
+                guard self != nil else { return }
+                switch responseData {
+                case .success(let User):
+                    let currentUser = User
+//                    print("User: \(String(describing: user.userId)), \(String(describing: user.username)), \(String(describing: user.password))")
+                    UserManager.users.append(currentUser)
+                    
+                    
+
+                    self!.goToNextVC(user: currentUser)
+                case .failure(let APIError):
+                    print("Error: \(APIError)")
+                }
+                
+            }
+            
+        }
+    }
+    
+    private func goToNextVC (user: User) {
+        print("opens tasks view controller")
+        let tableViewController = TasksTableViewController()
+        tableViewController.user = currentUser
+        present(tableViewController, animated: false)
+    }
+        
+        
+        
+//        guard let responseData = responseData, let userResponse = try? JSONDecoder().decode(UserManager.UserResponse.self, from: responseData) else { return }
+//        let user = User(username: authUser.username, password: authUser.password, userId: userResponse.userId)
+//        user.userId = userResponse.userId
+//        print (String (data: responseData, encoding: .utf8) ?? "nil")
+//            print("user: \(user.username!), passw: \(user.password!), userId: \(user.userId!)")
+        
+        
         
 /*
         let authUser = UserManager.AuthentificateRequest(username: "Marijans", password: "Latvis")
@@ -50,41 +111,52 @@ class ViewController: UIViewController {
  */
 
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(ViewController.tapFunction))
-                navigationalTextLabel.isUserInteractionEnabled = true
-                navigationalTextLabel.addGestureRecognizer(tap)
-        // INIT
-    }
+
 
     @IBAction func enterCredentialsButtonTapped(_ sender: Any) {
-        navigationalTextLabel.text = "Already registered? Login!"
-        
+        self.goToNextVC(user: currentUser!)
 
+        navigationalTextLabel.text = "Already registered? Login!"
+        }
+        
                     
-    }
     
-    @IBAction func tapFunction(sender: UITapGestureRecognizer) {
-        print("Label tapped")
+
+    
+    @IBAction func labelTapFunction(sender: UITapGestureRecognizer) {
+        registerUser()
+
         enterCredentialsButton.titleLabel?.text = "Register"
         navigationalTextLabel.text = "Have no username? Register!"
         
-//        swagger.deleteUser(userId: user22.userId ?? 0)
         
-        swagger.fetchUserTasks(userId: user22.userId ?? 0) { result in
-            switch result {
+        
 
-            case .success(let results):
-                self.tasks.append(contentsOf: results)
-                print("after \(self.tasks.count)")
-
-
-                for task in self.tasks {
-                    print("Id: \(task.id), title: \(task.title), description: \(task.description), estimateMinutes: \(task.estimateMinutes), loggedTime: \(task.loggedTime), isDone: \(task.isDone), assigneeInfo: \(task.assigneeInfo.id) - \(task.assigneeInfo.username)")
-                }
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
+        
+        
+        
+        
+        
+//        swagger.fetchUserTasks(userId: user22.userId ?? 0) { result in
+//            switch result {
+//
+//            case .success(let results):
+//                self.tasks.append(contentsOf: results)
+//                print("after \(self.tasks.count)")
+//
+//
+//                for task in self.tasks {
+//                    print("Id: \(task.id), title: \(task.title), description: \(task.description), estimateMinutes: \(task.estimateMinutes), loggedTime: \(task.loggedTime), isDone: \(task.isDone), assigneeInfo: \(task.assigneeInfo.id) - \(task.assigneeInfo.username)")
+//                }
+//            case .failure(let error):
+//                print(error.localizedDescription)
+//            }
+//        }
+        
+        
+        
+        
+        
 //        let newTask = TasksManager.NewTaskRegistrationRequest(title: "Sestadienis2", description: "Pavadinimas2LastBeforeLast", estimateMinutes: 20, assigneeId: user22.userId ?? 0)
 //        swagger.createNewTask(newTask: newTask) { respData in
 //            guard let respData = respData, let taskResponse = try? JSONDecoder().decode(TasksManager.TaskRequest.self, from: respData) else { return }
@@ -95,5 +167,8 @@ class ViewController: UIViewController {
  
     }
     
+    @IBAction func wtf(_ sender: Any) {
+
+    }
 }
 

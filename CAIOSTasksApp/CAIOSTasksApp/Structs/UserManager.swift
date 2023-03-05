@@ -7,10 +7,16 @@
 
 import Foundation
 
+struct CreatedUser {
+    let user: User?
+    let errorTitle: String?
+    let mistakeDescription: String?
+}
+
 class UserManager {
     
     
-    struct AuthentificateRequest: Codable {
+    struct AuthentificateRequest: Encodable {
         var username: String
         var password: String
         
@@ -20,8 +26,6 @@ class UserManager {
         }
     }
 
-
-
     struct UserResponse: Codable {
         let userId: Int
     }
@@ -30,6 +34,8 @@ class UserManager {
         case register
         case login
     }
+    
+    static var users: [User] = []
 
     
 }

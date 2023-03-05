@@ -20,10 +20,11 @@ class SwaggerAPI {
     
 
     static let shared = SwaggerAPI()
+//    private(set) var dataTask: URLSessionDataTask?
     private init() { }
     
     
-    private let encoder = JSONEncoder()
+//    private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     
     
@@ -155,20 +156,24 @@ class SwaggerAPI {
     
     // Darbines f-jos
     
-    func registerUser(user: UserManager.AuthentificateRequest, completion: @escaping (Data?) -> Void) {
+    func registerUser(user: UserManager.AuthentificateRequest, completion: @escaping (Result<User, Error>) -> Void) {
         
-            
+
+     
         let url = Constants.getURL(for: .userEndpoint, urlSuffix: .register )
         let registerRequestParams = user
         
-        let bodyData = try! encoder.encode(registerRequestParams)
+        let bodyData = try! JSONEncoder().encode(registerRequestParams)
         
         postRequest(url: url!, body: bodyData) { [weak self] response in
             guard self != nil else { return }
             switch response {
-            case .success(let data):
+            case .success(let responseData):
+                guard let userResponse = try? JSONDecoder().decode(UserManager.UserResponse.self, from: responseData) else { return }
+                let user = User(username: user.username, password: user.password, userId: userResponse.userId)
+                user.userId = userResponse.userId
                 print("registering success")
-                completion(data)
+                completion(.success(user))
             case .failure(let error):
                 switch error {
                 case .fetchFail:
@@ -183,7 +188,7 @@ class SwaggerAPI {
                 case .methodNotAllowed:
                     print("wrong method")
                 }
-                completion(nil)
+                completion(.failure(error))
             }
         }
     }
@@ -194,6 +199,7 @@ class SwaggerAPI {
         deleteRequest(url: url){ responseData in
             guard let responseData = responseData else { return }
             print (String (data: responseData, encoding: .utf8)!)
+            UserManager.users.removeLast()
         }
     }
     

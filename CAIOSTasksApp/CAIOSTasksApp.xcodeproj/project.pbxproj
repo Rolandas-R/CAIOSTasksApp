@@ -10,6 +10,7 @@
 		924235F629AB7F5400341428 /* TasksTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924235F529AB7F5400341428 /* TasksTableViewController.swift */; };
 		924235FE29AB8FF000341428 /* UserDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924235FD29AB8FEF00341428 /* UserDetailsViewController.swift */; };
 		92476E0129AFD6FC00941C9D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92476E0029AFD6FC00941C9D /* Constants.swift */; };
+		92699B6329B45A81004D0E9C /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92699B6229B45A81004D0E9C /* AlertController.swift */; };
 		927665A029B1AFDE0049C377 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9276659F29B1AFDE0049C377 /* UserManager.swift */; };
 		927665A229B1AFF70049C377 /* TasksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 927665A129B1AFF70049C377 /* TasksManager.swift */; };
 		9278A63229AB45550095102D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9278A63129AB45550095102D /* AppDelegate.swift */; };
@@ -29,6 +30,7 @@
 		924235F529AB7F5400341428 /* TasksTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksTableViewController.swift; sourceTree = "<group>"; };
 		924235FD29AB8FEF00341428 /* UserDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewController.swift; sourceTree = "<group>"; };
 		92476E0029AFD6FC00941C9D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		92699B6229B45A81004D0E9C /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
 		9276659F29B1AFDE0049C377 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		927665A129B1AFF70049C377 /* TasksManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksManager.swift; sourceTree = "<group>"; };
 		9278A62E29AB45550095102D /* CAIOSTasksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CAIOSTasksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,6 +88,7 @@
 				9278A63A29AB45580095102D /* Assets.xcassets */,
 				9278A63C29AB45580095102D /* LaunchScreen.storyboard */,
 				9278A63F29AB45580095102D /* Info.plist */,
+				92699B6229B45A81004D0E9C /* AlertController.swift */,
 			);
 			path = CAIOSTasksApp;
 			sourceTree = "<group>";
@@ -194,6 +197,7 @@
 				927665A029B1AFDE0049C377 /* UserManager.swift in Sources */,
 				928DB2E829ABA73B00313467 /* TaskDetailsViewController.swift in Sources */,
 				9278A63429AB45550095102D /* SceneDelegate.swift in Sources */,
+				92699B6329B45A81004D0E9C /* AlertController.swift in Sources */,
 				92DE6A9429AFB0C700FFF64C /* Task.swift in Sources */,
 				92DE6A9029AFB08900FFF64C /* User.swift in Sources */,
 				92D6024229AFBA6B00EE6F09 /* SwaggerAPI.swift in Sources */,

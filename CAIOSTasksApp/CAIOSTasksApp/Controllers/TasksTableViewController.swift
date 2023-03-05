@@ -10,8 +10,8 @@ import UIKit
 class TasksTableViewController: UITableViewController {
     
     let swagger = SwaggerAPI.shared
-//    var currentUser: User?
-    var currentUser = user22
+    var user = UserManager.users.last
+//    var user = user22
     
     private var tableData: [Task]? {
         didSet {
@@ -24,9 +24,18 @@ class TasksTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.delegate = self
+        fetchAllTasks()
         
-        swagger.fetchUserTasks(userId: currentUser.userId ?? 0) { task in
-            guard self.currentUser.userId != nil else { return }
+        
+        
+
+    }
+    
+    func fetchAllTasks() {
+        swagger.fetchUserTasks(userId: user?.userId ?? 0) { task in
+            guard self.user?.userId != nil else { return }
             
             switch task {
                 
@@ -39,6 +48,40 @@ class TasksTableViewController: UITableViewController {
             }
         }
     }
+    
+    func newTaskDetails() {
+        let alertController = UIAlertController(title: "Enter new task details", message: "Create new task", preferredStyle: .alert)
+
+        let okAction = UIAlertAction(title: "OK", style: .default) { alertAction in
+            if let newTaskTitle = alertController.textFields?.first?.text {
+                print(newTaskTitle)
+//                self.goToNextVC(user: self.user)
+            }
+        }
+            alertController.addAction(okAction)
+            alertController.addTextField { textField in
+                textField.placeholder = "Username"
+                
+                
+            }
+            self.present(alertController, animated: true)
+    }
+    
+    @IBAction func createNewTaskButtonTapped(_ sender: Any) {
+//        newTaskDetails()
+        
+        let newTask = TasksManager.NewTaskRegistrationRequest(title: "Sekmadienis ipusejo", description: "Vargo vakariene tesiasi", estimateMinutes: 20, assigneeId: UserManager.users.last?.userId ?? 0)
+        
+        swagger.createNewTask(newTask: newTask) { respData in
+            guard let respData = respData, let taskResponse = try? JSONDecoder().decode(TasksManager.TaskRequest.self, from: respData) else { return }
+            let task = Task(id: taskResponse.id, title: newTask.title, description: newTask.description, estimateMinutes: newTask.estimateMinutes, assigneeInfo: Assignee(id: newTask.assigneeId, username: self.user?.username ?? ""), loggedTime: newTask.estimateMinutes, isDone: false)
+            print (String (data: respData, encoding: .utf8) ?? "nil")
+            print(taskResponse.id)
+            self.fetchAllTasks()
+        }
+       
+    }
+
 
 
     // MARK: - Table view data source
@@ -54,11 +97,14 @@ class TasksTableViewController: UITableViewController {
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath) as UITableViewCell
+        
+        guard (tableData?[indexPath.row]) != nil else { return cell }
         cell.textLabel?.text = tableData?[indexPath.row].title
         cell.detailTextLabel?.text = tableData?[indexPath.row].description
-
-
+        cell.textLabel?.font = .systemFont(ofSize: 20)
+        cell.detailTextLabel?.font = .systemFont(ofSize: 18)
         return cell
     }
 

@@ -26,7 +26,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="kJR-WN-gcg" userLabel="TextFields Stack View">
                                 <rect key="frame" x="30" y="314.33333333333331" width="333" height="90"/>
                                 <subviews>
-                                    <textField toolTip="Enter username" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Username:   " borderStyle="line" placeholder="Enter username:  " minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="3P0-b2-GnP">
+                                    <textField toolTip="Enter username" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Enter username:  " minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="3P0-b2-GnP">
                                         <rect key="frame" x="0.0" y="0.0" width="333" height="40"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -36,7 +36,7 @@
                                         <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                     </textField>
-                                    <textField toolTip="Enter password" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Password:   " borderStyle="line" placeholder="Enter password:  " textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Ffd-eh-OfG">
+                                    <textField toolTip="Enter password" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Enter password:  " textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Ffd-eh-OfG">
                                         <rect key="frame" x="0.0" y="50" width="333" height="40"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -61,7 +61,7 @@
                                     <color key="baseBackgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </buttonConfiguration>
                                 <connections>
-                                    <segue destination="Vsf-wL-XrJ" kind="show" id="DpQ-xx-3Oa"/>
+                                    <segue destination="Vsf-wL-XrJ" kind="show" identifier="tabBar" id="DpQ-xx-3Oa"/>
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jAq-N9-NDB" userLabel="Label Stack View">
@@ -96,6 +96,15 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aKg-xb-SiT">
+                                <rect key="frame" x="166" y="681" width="75" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Button"/>
+                                <connections>
+                                    <action selector="wtf:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Che-oe-KhL"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.30943736430000002" green="0.55572819709999999" blue="0.76618784669999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -132,7 +141,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6471" y="267"/>
+            <point key="canvasLocation" x="7397.7099236641216" y="266.90140845070425"/>
         </scene>
         <!--Tasks-->
         <scene sceneID="ns4-b6-87N">
@@ -143,22 +152,22 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="tasksCell" textLabel="VpT-zf-CF5" detailTextLabel="Q17-UI-tUu" style="IBUITableViewCellStyleSubtitle" id="2Nl-xq-X96">
-                                <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="tasksCell" textLabel="VpT-zf-CF5" detailTextLabel="Q17-UI-tUu" rowHeight="60" style="IBUITableViewCellStyleSubtitle" id="2Nl-xq-X96">
+                                <rect key="frame" x="0.0" y="50" width="393" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="2Nl-xq-X96" id="SmX-A0-ZYJ">
-                                    <rect key="frame" x="0.0" y="0.0" width="362.66666666666669" height="43.666667938232422"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="362.66666666666669" height="60"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VpT-zf-CF5">
-                                            <rect key="frame" x="20" y="6.0000000000000009" width="26.333333333333332" height="14.333333333333334"/>
+                                            <rect key="frame" x="20" y="14" width="26.333333333333332" height="14.333333333333334"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="0.0"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Q17-UI-tUu">
-                                            <rect key="frame" x="20" y="22.333333333333336" width="65" height="14.333333333333334"/>
+                                            <rect key="frame" x="20" y="30.333333333333332" width="65" height="14.333333333333334"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
                                             <color key="textColor" systemColor="systemGrayColor"/>
@@ -177,12 +186,16 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Tasks" id="KyZ-IL-Sva">
-                        <barButtonItem key="rightBarButtonItem" image="plus.app" catalog="system" id="yGN-o1-0Yg"/>
+                        <barButtonItem key="rightBarButtonItem" image="plus.app" catalog="system" id="yGN-o1-0Yg">
+                            <connections>
+                                <action selector="createNewTaskButtonTapped:" destination="a1S-7F-YfH" id="V3T-MM-dJg"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Atc-cu-2bv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="9311" y="-27"/>
+            <point key="canvasLocation" x="10237.404580152672" y="-27.464788732394368"/>
         </scene>
         <!--Task-->
         <scene sceneID="waQ-75-IGZ">
@@ -263,7 +276,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xv8-nI-Wuz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="10182.442748091602" y="-27.464788732394368"/>
+            <point key="canvasLocation" x="11109.16030534351" y="-27.464788732394368"/>
         </scene>
         <!--User-->
         <scene sceneID="gDp-3a-9UA">
@@ -316,6 +329,9 @@
                     <navigationItem key="navigationItem" title="User" id="jZf-L5-WvG">
                         <barButtonItem key="rightBarButtonItem" image="trash.fill" catalog="system" id="w7R-9Z-Gt9">
                             <color key="tintColor" systemColor="systemRedColor"/>
+                            <connections>
+                                <action selector="deleteUserTapped:" destination="xUz-FD-Lpo" id="ByV-WT-kvi"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
@@ -324,7 +340,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SJv-oA-J5F" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="9311" y="782"/>
+            <point key="canvasLocation" x="10237.404580152672" y="781.69014084507046"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="JK4-Mp-S5F">
@@ -345,7 +361,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q88-Km-gYZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7389" y="267"/>
+            <point key="canvasLocation" x="8315.2671755725187" y="266.90140845070425"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Ntq-y2-XIc">
@@ -367,7 +383,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vPY-UH-sdI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="8411.4503816793895" y="-27.464788732394368"/>
+            <point key="canvasLocation" x="9338.1679389312976" y="-27.464788732394368"/>
         </scene>
         <!--User-->
         <scene sceneID="zWo-FR-TQU">
@@ -390,7 +406,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4GN-Uz-JPn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="8411" y="782"/>
+            <point key="canvasLocation" x="9336.6412213740459" y="781.69014084507046"/>
         </scene>
     </scenes>
     <resources>
