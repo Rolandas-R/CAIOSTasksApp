@@ -11,6 +11,7 @@ class TasksTableViewController: UITableViewController {
     
     let swagger = SwaggerAPI.shared
     var user = UserManager.users.last
+    var newTask: TasksManager.NewTaskRegistrationRequest?
 //    var user = user22
     
     private var tableData: [Task]? {
@@ -51,30 +52,45 @@ class TasksTableViewController: UITableViewController {
     
     func newTaskDetails() {
         let alertController = UIAlertController(title: "Enter new task details", message: "Create new task", preferredStyle: .alert)
-
-        let okAction = UIAlertAction(title: "OK", style: .default) { alertAction in
-            if let newTaskTitle = alertController.textFields?.first?.text {
-                print(newTaskTitle)
-//                self.goToNextVC(user: self.user)
+        
+        alertController.addTextField { (textField) in
+            textField.placeholder = "Task title"
+        }
+        alertController.addTextField { (textField) in
+            textField.placeholder = "Task description"
+        }
+        alertController.addTextField { (textField) in
+            textField.placeholder = "Task Estimate Minutes"
+        }
+        alertController.addTextField { (textField) in
+            textField.placeholder = "Assignee ID"
+        }
+        
+        
+        let okAction = UIAlertAction(title: "OK", style: .default) { action in
+            
+            
+            guard let textFields = alertController.textFields else { return }
+            if let newTaskTitle = textFields[0].text,
+               let newTaskDescription = textFields[1].text,
+               let newTaskEstimateMinutes = textFields[2].text,
+               let newTaskAsigneeId = textFields[3].text {
+                self.newTask = TasksManager.NewTaskRegistrationRequest(title: newTaskTitle, description: newTaskDescription, estimateMinutes: Int(newTaskEstimateMinutes)!, assigneeId: Int(newTaskAsigneeId)!)
             }
         }
-            alertController.addAction(okAction)
-            alertController.addTextField { textField in
-                textField.placeholder = "Username"
-                
-                
-            }
-            self.present(alertController, animated: true)
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true)
+
     }
-    
     @IBAction func createNewTaskButtonTapped(_ sender: Any) {
-//        newTaskDetails()
-        
-        let newTask = TasksManager.NewTaskRegistrationRequest(title: "Sekmadienis ipusejo", description: "Vargo vakariene tesiasi", estimateMinutes: 20, assigneeId: UserManager.users.last?.userId ?? 0)
+        newTaskDetails()
+
+//
+        let newTask = TasksManager.NewTaskRegistrationRequest(title: newTask?.title ?? ";akd;kd", description: newTask?.description ?? "kjahdskjh", estimateMinutes: newTask?.estimateMinutes ?? 0, assigneeId: user?.userId ?? 0)
         
         swagger.createNewTask(newTask: newTask) { respData in
             guard let respData = respData, let taskResponse = try? JSONDecoder().decode(TasksManager.TaskRequest.self, from: respData) else { return }
-            let task = Task(id: taskResponse.id, title: newTask.title, description: newTask.description, estimateMinutes: newTask.estimateMinutes, assigneeInfo: Assignee(id: newTask.assigneeId, username: self.user?.username ?? ""), loggedTime: newTask.estimateMinutes, isDone: false)
+            let task = Task(id: taskResponse.id, title: self.newTask!.title, description: self.newTask!.description, estimateMinutes: self.newTask!.estimateMinutes, assigneeInfo: Assignee(id: self.newTask!.assigneeId, username: self.user?.username ?? ""), loggedTime: self.newTask!.estimateMinutes, isDone: false)
             print (String (data: respData, encoding: .utf8) ?? "nil")
             print(taskResponse.id)
             self.fetchAllTasks()
