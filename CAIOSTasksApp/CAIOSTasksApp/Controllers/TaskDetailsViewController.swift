@@ -29,6 +29,8 @@ class TaskDetailsViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
+    
+    
 
     
     private func setupTaskDetailsTableView() {
@@ -39,7 +41,21 @@ class TaskDetailsViewController: UIViewController {
     
     @IBAction func updateTaskDetailButtonTapped(_ sender: Any) {
         print("Update Task Detail Button Tapped")
-        
+        let fetchTaskId = taskManager.taskRequest.id
+        swagger.fetchTask(taskId: fetchTaskId) {  result in
+            switch result {
+            case .success(let result):
+                print(result)
+              
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    
+    @IBAction func cellStepperTapped(_ sender: Any) {
+        print("Logged time stepper in task description prototype cell tapped")
         swagger.fetchUserTasks(userId: user22.userId ?? 0) { result in
             switch result {
 
@@ -54,23 +70,9 @@ class TaskDetailsViewController: UIViewController {
                 print(error.localizedDescription)
             }
         }
-    }
-    
-    
-    @IBAction func cellStepperTapped(_ sender: Any) {
-        print("Logged time stepper in task description prototype cell tapped")
         
         
-        let fetchTaskId = taskManager.taskRequest.id
-        swagger.fetchTask(taskId: fetchTaskId) {  result in
-            switch result {
-            case .success(let result):
-                print(result)
-              
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
+
     }
     
 }

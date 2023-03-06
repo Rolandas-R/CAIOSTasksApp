@@ -34,6 +34,25 @@ class UserDetailsViewController: UIViewController {
        
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     /* MARK: tasko su id fetchinimas ir (?) editinimas:
      var tasks: [Task] = []

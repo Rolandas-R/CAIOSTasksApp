@@ -10,9 +10,9 @@ import UIKit
 class TasksTableViewController: UITableViewController {
     
     let swagger = SwaggerAPI.shared
-    var user = UserManager.users.last
+//    var user = UserManager.users.last
     var newTask: TasksManager.NewTaskRegistrationRequest?
-//    var user = user22
+    var user = user22
     
     private var tableData: [Task]? {
         didSet {
@@ -35,8 +35,8 @@ class TasksTableViewController: UITableViewController {
     }
     
     func fetchAllTasks() {
-        swagger.fetchUserTasks(userId: user?.userId ?? 0) { task in
-            guard self.user?.userId != nil else { return }
+        swagger.fetchUserTasks(userId: user.userId ?? 0) { task in
+            guard self.user.userId != nil else { return }
             
             switch task {
                 
@@ -49,6 +49,8 @@ class TasksTableViewController: UITableViewController {
             }
         }
     }
+    
+    
     
     func newTaskDetails() {
         let alertController = UIAlertController(title: "Enter new task details", message: "Create new task", preferredStyle: .alert)
@@ -86,16 +88,22 @@ class TasksTableViewController: UITableViewController {
         newTaskDetails()
 
 //
-        let newTask = TasksManager.NewTaskRegistrationRequest(title: newTask?.title ?? ";akd;kd", description: newTask?.description ?? "kjahdskjh", estimateMinutes: newTask?.estimateMinutes ?? 0, assigneeId: user?.userId ?? 0)
+        let newTask = TasksManager.NewTaskRegistrationRequest(title: newTask?.title ?? "Kazkoks pavadinimas nes nill", description: newTask?.description ?? "kazkoks aprasymas nes nill", estimateMinutes: newTask?.estimateMinutes ?? 0, assigneeId: user.userId ?? 0)
         
         swagger.createNewTask(newTask: newTask) { respData in
             guard let respData = respData, let taskResponse = try? JSONDecoder().decode(TasksManager.TaskRequest.self, from: respData) else { return }
-            let task = Task(id: taskResponse.id, title: self.newTask!.title, description: self.newTask!.description, estimateMinutes: self.newTask!.estimateMinutes, assigneeInfo: Assignee(id: self.newTask!.assigneeId, username: self.user?.username ?? ""), loggedTime: self.newTask!.estimateMinutes, isDone: false)
+            let task = Task(id: taskResponse.id, title: self.newTask!.title, description: self.newTask!.description, estimateMinutes: self.newTask!.estimateMinutes, assigneeInfo: Assignee(id: self.newTask!.assigneeId, username: self.user.username ?? ""), loggedTime: self.newTask!.estimateMinutes, isDone: false)
             print (String (data: respData, encoding: .utf8) ?? "nil")
             print(taskResponse.id)
-            self.fetchAllTasks()
+            DispatchQueue.main.async { [weak self] in
+                self?.fetchAllTasks()
+//                self?.tableData.reloadData()
+                            }
+//            self.fetchAllTasks()
+            
         }
-       
+        
+
     }
 
 
@@ -125,25 +133,27 @@ class TasksTableViewController: UITableViewController {
     }
 
 
-    /*
+    
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
     }
-    */
 
-    /*
+
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
+        let taskId = (tableData?[indexPath.row].id)!
+                if editingStyle == .delete {
+                    tableData?.remove(at: indexPath.row)
+                    swagger.deleteTask(taskId: taskId)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                    
+            
         } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+            return
         }    
     }
-    */
 
     /*
     // Override to support rearranging the table view.

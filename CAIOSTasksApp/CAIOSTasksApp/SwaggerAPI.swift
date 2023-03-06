@@ -18,13 +18,13 @@ class SwaggerAPI {
         
     }
     
-
+    
     static let shared = SwaggerAPI()
-//    private(set) var dataTask: URLSessionDataTask?
+    //    private(set) var dataTask: URLSessionDataTask?
     private init() { }
     
     
-//    private let encoder = JSONEncoder()
+    //    private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     
     
@@ -154,12 +154,12 @@ class SwaggerAPI {
     
     
     
-    // Darbines f-jos
+    // MARK: Darbines funkcijos
+    
+//    USERio managinimo f-jos
     
     func registerUser(user: UserManager.AuthentificateRequest, completion: @escaping (Result<User, Error>) -> Void) {
-        
-
-     
+    
         let url = Constants.getURL(for: .userEndpoint, urlSuffix: .register )
         let registerRequestParams = user
         
@@ -192,7 +192,41 @@ class SwaggerAPI {
             }
         }
     }
-   
+    
+    
+    func loginUser(user: User, completion: @escaping (Result<User, Error>) -> Void) {
+        let loginUserRequest = User(username: user.username, password: user.password)
+        let loginData = try! JSONEncoder().encode (loginUserRequest)
+        guard let loginURL = Constants.getURL(for: .userEndpoint, urlSuffix: .login) else { return }
+        
+        postRequest(url: loginURL, body: loginData) { [weak self] loginResponse in
+            guard self != nil else { return }
+            switch loginResponse {
+            case .success(let responseData):
+                guard let loginResponse = try? JSONDecoder().decode(UserManager.UserResponse.self, from: responseData) else { return }
+                let user = User(username: user.username, password: user.password, userId: loginResponse.userId)
+                print("registering success")
+                completion(.success(user))
+            case .failure(let error):
+                switch error {
+                case .fetchFail:
+                    print("unknown error")
+                case .notFound:
+                    print("Not found")
+                case .badRequest(let errorMessage):
+                    print("Bad request:")
+                    print(errorMessage ?? "Bad request")
+                case .parsingFail:
+                    print("parsing failed")
+                case .methodNotAllowed:
+                    print("wrong method")
+                }
+                completion(.failure(error))
+            }
+
+        }
+    }
+    
     func deleteUser(userId: Int) {
         guard let url = Constants.getURL(for: .userEndpoint, id: userId) else { return }
         
@@ -202,6 +236,10 @@ class SwaggerAPI {
             UserManager.users.removeLast()
         }
     }
+    
+    
+    // TASKo managinimo f-jos
+
     
     func fetchUserTasks(userId: Int, completion: @escaping (Result<[Task], APIErorr>) -> Void) {
         
@@ -240,7 +278,7 @@ class SwaggerAPI {
     }
     
     func fetchTask (taskId: Int, completion: @escaping (Result<Task, APIErorr>) -> Void) {
-
+        
         guard let queryURL = Constants.getURL(for: .taskEndpoint, id: taskId) else { return }
         print(queryURL)
         getRequest(url: queryURL) { [weak self] result in
@@ -337,6 +375,18 @@ class SwaggerAPI {
         }
     }
     
+    func deleteTask(taskId: Int) {
+        
+        guard let url = Constants.getURL(for: .taskEndpoint, id: taskId) else { return }
+        
+        deleteRequest(url: url){ responseData in
+            guard let responseData = responseData else { return }
+            print(String (data: responseData, encoding: .utf8)!)
+            print("Task with id \(taskId) was deleted")
+
+        }
+    }
+  
 
 }
 

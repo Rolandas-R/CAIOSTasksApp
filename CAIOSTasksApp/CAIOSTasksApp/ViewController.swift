@@ -26,8 +26,9 @@ class ViewController: UIViewController {
     let userManager = UserManager()
     
     let taskManager = TasksManager()
+    var currentUser = User?.self
     
-    var currentUser = UserManager.users.last
+//    var currentUser = UserManager.users.last
     
     var currentState: State = .register
     
@@ -46,7 +47,7 @@ class ViewController: UIViewController {
     }
     
     
-    private func registerUser() {
+    private func authenticateUser() {
         
         let username = enterUserNameField.text ?? ""
         let password = enterPasswordField.text ?? ""
@@ -62,10 +63,8 @@ class ViewController: UIViewController {
                 switch responseData {
                 case .success(let User):
                     let currentUser = User
-//                    print("User: \(String(describing: user.userId)), \(String(describing: user.username)), \(String(describing: user.password))")
+                    print("User: \(currentUser.userId), \(currentUser.username), \(currentUser.password)")
                     UserManager.users.append(currentUser)
-                    
-                    
 
                     self!.goToNextVC(user: currentUser)
                 case .failure(let APIError):
@@ -77,10 +76,12 @@ class ViewController: UIViewController {
         }
     }
     
+    
+    
     private func goToNextVC (user: User) {
         print("opens tasks view controller")
         let tableViewController = TasksTableViewController()
-        tableViewController.user = currentUser
+        tableViewController.user = user
         present(tableViewController, animated: false)
     }
         
@@ -114,7 +115,7 @@ class ViewController: UIViewController {
 
 
     @IBAction func enterCredentialsButtonTapped(_ sender: Any) {
-        self.goToNextVC(user: currentUser!)
+        authenticateUser()
 
         navigationalTextLabel.text = "Already registered? Login!"
         }
@@ -124,7 +125,7 @@ class ViewController: UIViewController {
 
     
     @IBAction func labelTapFunction(sender: UITapGestureRecognizer) {
-        registerUser()
+        authenticateUser()
 
         enterCredentialsButton.titleLabel?.text = "Register"
         navigationalTextLabel.text = "Have no username? Register!"

@@ -19,5 +19,5 @@ class User: Codable {
     }
 }
 
-var user22 = User(username: "Marijans", password: "Latvis", userId: 354)
+var user22 = User(username: "Marijons", password: "Latvis", userId: 607)
 
