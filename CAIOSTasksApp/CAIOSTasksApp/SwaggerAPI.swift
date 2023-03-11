@@ -169,7 +169,7 @@ class SwaggerAPI {
             guard self != nil else { return }
             switch response {
             case .success(let responseData):
-                guard let userResponse = try? JSONDecoder().decode(UserManager.UserResponse.self, from: responseData) else { return }
+                guard let userResponse = try? JSONDecoder().decode(UserManager.AuthentificationResponse.self, from: responseData) else { return }
                 let user = User(username: user.username, password: user.password, userId: userResponse.userId)
                 user.userId = userResponse.userId
                 print("registering success")
@@ -203,7 +203,7 @@ class SwaggerAPI {
             guard self != nil else { return }
             switch loginResponse {
             case .success(let responseData):
-                guard let loginResponse = try? JSONDecoder().decode(UserManager.UserResponse.self, from: responseData) else { return }
+                guard let loginResponse = try? JSONDecoder().decode(UserManager.AuthentificationResponse.self, from: responseData) else { return }
                 let user = User(username: user.username, password: user.password, userId: loginResponse.userId)
                 print("registering success")
                 completion(.success(user))
