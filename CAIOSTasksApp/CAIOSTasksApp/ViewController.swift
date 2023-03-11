@@ -63,7 +63,7 @@ class ViewController: UIViewController {
                 switch responseData {
                 case .success(let User):
                     let currentUser = User
-                    print("User: \(currentUser.userId), \(currentUser.username), \(currentUser.password)")
+                    print("User: \(currentUser.userId ?? 0), \(currentUser.username ?? ""), \(currentUser.password ?? "")")
                     UserManager.users.append(currentUser)
 
                     self!.goToNextVC(user: currentUser)
@@ -84,6 +84,26 @@ class ViewController: UIViewController {
         tableViewController.user = user
         present(tableViewController, animated: false)
     }
+        
+
+
+    @IBAction func enterCredentialsButtonTapped(_ sender: Any) {
+        authenticateUser()
+
+        navigationalTextLabel.text = "Already registered? Login!"
+        }
+
+    
+    @IBAction func labelTapFunction(sender: UITapGestureRecognizer) {
+        authenticateUser()
+
+        enterCredentialsButton.titleLabel?.text = "Register"
+        navigationalTextLabel.text = "Have no username? Register!"
+        
+        
+        
+        
+        
         
         
         
@@ -110,26 +130,6 @@ class ViewController: UIViewController {
 
         }
  */
-
-        
-
-
-    @IBAction func enterCredentialsButtonTapped(_ sender: Any) {
-        authenticateUser()
-
-        navigationalTextLabel.text = "Already registered? Login!"
-        }
-        
-                    
-    
-
-    
-    @IBAction func labelTapFunction(sender: UITapGestureRecognizer) {
-        authenticateUser()
-
-        enterCredentialsButton.titleLabel?.text = "Register"
-        navigationalTextLabel.text = "Have no username? Register!"
-        
         
         
 
@@ -154,10 +154,7 @@ class ViewController: UIViewController {
 //            }
 //        }
         
-        
-        
-        
-        
+  
 //        let newTask = TasksManager.NewTaskRegistrationRequest(title: "Sestadienis2", description: "Pavadinimas2LastBeforeLast", estimateMinutes: 20, assigneeId: user22.userId ?? 0)
 //        swagger.createNewTask(newTask: newTask) { respData in
 //            guard let respData = respData, let taskResponse = try? JSONDecoder().decode(TasksManager.TaskRequest.self, from: respData) else { return }

@@ -77,7 +77,7 @@ class TasksTableViewController: UITableViewController {
                let newTaskDescription = textFields[1].text,
                let newTaskEstimateMinutes = textFields[2].text,
                let newTaskAsigneeId = textFields[3].text {
-                self.newTask = TasksManager.NewTaskRegistrationRequest(title: newTaskTitle, description: newTaskDescription, estimateMinutes: Int(newTaskEstimateMinutes)!, assigneeId: Int(newTaskAsigneeId)!)
+                self.newTask = TasksManager.NewTaskRegistrationRequest(title: newTaskTitle, description: newTaskDescription, estimateMinutes: Int(newTaskEstimateMinutes) ?? 0, assigneeId: Int(newTaskAsigneeId) ?? 0)
             }
         }
         alertController.addAction(okAction)
@@ -92,7 +92,7 @@ class TasksTableViewController: UITableViewController {
         
         swagger.createNewTask(newTask: newTask) { respData in
             guard let respData = respData, let taskResponse = try? JSONDecoder().decode(TasksManager.TaskRequest.self, from: respData) else { return }
-            let task = Task(id: taskResponse.id, title: self.newTask!.title, description: self.newTask!.description, estimateMinutes: self.newTask!.estimateMinutes, assigneeInfo: Assignee(id: self.newTask!.assigneeId, username: self.user.username ?? ""), loggedTime: self.newTask!.estimateMinutes, isDone: false)
+            _ = Task(id: taskResponse.id, title: self.newTask!.title, description: self.newTask!.description, estimateMinutes: self.newTask!.estimateMinutes, assigneeInfo: Assignee(id: self.newTask!.assigneeId, username: self.user.username ?? ""), loggedTime: self.newTask!.estimateMinutes, isDone: false)
             print (String (data: respData, encoding: .utf8) ?? "nil")
             print(taskResponse.id)
             DispatchQueue.main.async { [weak self] in

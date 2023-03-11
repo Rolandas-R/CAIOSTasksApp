@@ -20,7 +20,7 @@ class UserDetailsViewController: UIViewController {
         super.viewDidLoad()
 
         for user in UserManager.users {
-            print("\(user.username) and \(user.password) plus \(user.userId)")
+            print("\(user.username!) and \(user.password!) plus \(user.userId!)")
         }
         
         presentUserNameTextLabel.text = currentUser?.username
